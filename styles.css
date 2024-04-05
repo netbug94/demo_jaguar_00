@@ -1,12 +1,7 @@
 body {
     background-image: url('resources/landscape-night/landscape-night.svg');
     background-position: center center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
     background-size: cover;
-    height: 100vh;
-    margin: 0;
-    overflow: hidden; /* Prevents scrolling outside the game area */
 }
 
 .game-container {
