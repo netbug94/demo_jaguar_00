@@ -1,6 +1,9 @@
 body {
     background-image: url('resources/landscape-night/landscape-night.svg');
-
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    shape-rendering: crispEdges; /* Apply this only if your SVG is embedded directly in HTML */
 }
 
 .game-container {
