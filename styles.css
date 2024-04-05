@@ -1,9 +1,10 @@
 body {
     background-image: url('resources/landscape-night/landscape-night.svg');
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-}
+        background-size: cover;
+        height: 0;
+        padding-bottom: calc(100% * 3 / 4); /* Adjust the 3/4 ratio based on your image's aspect ratio */
+       }
+       
 
 .game-container {
     width: 100%; /* Adjust the width as needed */
