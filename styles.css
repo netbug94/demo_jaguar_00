@@ -1,13 +1,6 @@
 body {
     background-image: url('resources/landscape-night/landscape-night.svg');
-    background-position: center center;
-    background-size: cover;
-    background-size: contain;
-    background-size: inherit;
-    background-size: initial;
-    background-size: revert;
-    background-size: revert-layer;
-    background-size: unset;
+
 }
 
 .game-container {
