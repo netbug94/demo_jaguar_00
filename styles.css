@@ -1,0 +1,27 @@
+body {
+    background-image: url('resources/landscape-night/landscape-night.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden; /* Prevents scrolling outside the game area */
+}
+
+.game-container {
+    width: 100%; /* Adjust the width as needed */
+    height: 100vh; /* Adjust the height as needed */
+    position: relative; /* Allows absolute positioning within the container */
+    overflow: hidden; /* Prevents scrolling within the game area */
+}
+
+#jaguar-walking-image {
+    position: absolute;
+    left: 50%; /* Center horizontally */
+    bottom: 7%; /* Align to the bottom */
+    transform: translateX(-50%); /* Adjust the position to be centered horizontally */
+    width: 400px; /* Set the width of the image */
+    height: auto; /* Maintain the aspect ratio */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+}
