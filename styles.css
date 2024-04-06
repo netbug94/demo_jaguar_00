@@ -7,7 +7,23 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    z-index: 0; /* Ensure it's behind other content */
 }
+
+
+body::after {
+    content: "";
+    background-image: url('resources/landscape-night/pasto.svg');
+    background-repeat: repeat;
+    position: absolute;
+    top: auto; /* Set to auto */
+    bottom: 0; /* Align to the bottom */
+    left: 0;
+    width: 100%; /* Adjust the width as needed */
+    height: 15%; /* Adjust the height as needed */
+    z-index: 1; /* Ensure it's behind other content */
+}
+
 
 .game-container {
     width: 100%; /* Adjust the width as needed */
@@ -24,4 +40,5 @@ body {
     width: 400px; /* Set the width of the image */
     height: auto; /* Maintain the aspect ratio */
     object-fit: cover; /* Ensure the image covers the area without distortion */
+    z-index: 2; /* Ensure it's behind other content */
 }
