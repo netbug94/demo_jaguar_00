@@ -1,41 +1,23 @@
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: sans-serif;
-    background-image: url('resources/landscape-night/cielo-noche.svg');
+    background-image: url(resources/landscape-night/cielo-noche.webp);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
+    background-position: center;
 }
 
-body::after {
-    content: "";
-    background-image: url('resources/landscape-night/pasto.svg');
-    background-repeat: repeat;
+.overlay {
     position: absolute;
-    top: auto; /* Set to auto */
-    bottom: 0; /* Align to the bottom */
+    top: auto;
+    bottom: 0; /* Position the image at the bottom */
     left: 0;
-    width: 100%; /* Adjust the width as needed */
-    height: 15%; /* Adjust the height as needed */
+    width: 100%;
+    height: 14%;
+    background-image: url(resources/landscape-night/pasto.webp);
+    background-size: cover;
+    background-repeat: no-repeat;
+    opacity: 1;
 }
 
-
-.game-container {
-    width: 100%; /* Adjust the width as needed */
-    height: 100vh; /* Adjust the height as needed */
-    position: relative; /* Allows absolute positioning within the container */
-    overflow: hidden; /* Prevents scrolling within the game area */
-}
-
-#jaguar-walking-image {
-    position: absolute;
-    left: 50%; /* Center horizontally */
-    bottom: 7%; /* Align to the bottom */
-    transform: translateX(-50%); /* Adjust the position to be centered horizontally */
-    width: 400px; /* Set the width of the image */
-    height: auto; /* Maintain the aspect ratio */
-    object-fit: cover; /* Ensure the image covers the area without distortion */
-    z-index: 1; /* Ensure it's behind other content */
-}
