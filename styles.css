@@ -27,7 +27,7 @@ body {
     max-width: 404px; /* Set maximum width */
     max-height: 189px; /* Set maximum height */
     min-height: auto;
-    min-width: 140px;
+    min-width: 180px;
     width: 30%; /* Allow dynamic resizing */
     height: auto; /* Maintain aspect ratio */
     left: 50%; /* Center horizontally */
