@@ -26,6 +26,8 @@ body {
     position: absolute;
     max-width: 404px; /* Set maximum width */
     max-height: 189px; /* Set maximum height */
+    min-height: 202px;
+    min-width: 94.5px;
     width: 30%; /* Allow dynamic resizing */
     height: auto; /* Maintain aspect ratio */
     left: 50%; /* Center horizontally */
