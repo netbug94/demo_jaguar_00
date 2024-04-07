@@ -8,7 +8,7 @@ body {
     background-position: center;
 }
 
-.overlay {
+.grass-container {
     position: absolute;
     top: auto;
     bottom: 0; /* Position the image at the bottom */
@@ -19,5 +19,17 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     opacity: 1;
+    z-index: 1;
 }
 
+.jaguar-zero-container {
+    position: absolute;
+    max-width: 404px; /* Set maximum width */
+    max-height: 189px; /* Set maximum height */
+    width: 30%; /* Allow dynamic resizing */
+    height: auto; /* Maintain aspect ratio */
+    left: 50%; /* Center horizontally */
+    bottom: 7%; /* Align to the bottom */
+    transform: translateX(-50%); /* Adjust for perfect center */
+    z-index: 2;
+}
