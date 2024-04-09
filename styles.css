@@ -1,17 +1,21 @@
 body {
     margin: 0;
     padding: 0;
-    background-image: url(resources/landscape-night/cielo-noche.webp);
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: center;
+}
+
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    pointer-events: none; /* Make sure the background image doesn't capture pointer events */
 }
 
 .grass-container {
     position: absolute;
-    top: auto;
-    bottom: 0; /* Position the image at the bottom */
+    top: 86%; /* Position the grass at the bottom */
     left: 0;
     width: 100%;
     height: 14%;
@@ -22,16 +26,16 @@ body {
     z-index: 1;
 }
 
-.jaguar-zero-container {
+.jaguar-container {
     position: absolute;
-    max-width: 404px; /* Set maximum width */
-    max-height: 189px; /* Set maximum height */
-    min-height: auto;
-    min-width: 232px;
-    width: 30%; /* Allow dynamic resizing */
-    height: auto; /* Maintain aspect ratio */
-    left: 50%; /* Center horizontally */
-    bottom: 7%; /* Align to the bottom */
-    transform: translateX(-50%); /* Adjust for perfect center */
+    bottom: 7%;
     z-index: 2;
+}
+
+.jaguar-zero-container {
+    transition: transform 0.5s ease-in-out;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    position: relative;
 }
