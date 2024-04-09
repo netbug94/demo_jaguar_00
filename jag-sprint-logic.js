@@ -9,6 +9,12 @@ export function attachSprintHandler(jaguar, updatePosition, manageInterval) {
         sprintLeftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
     }
 
+    // Preload sprint images
+    [...sprintRightImageUrls, ...sprintLeftImageUrls].forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
     function updateJaguarImage(direction) {
         const imageUrls = direction === 'right' ? sprintRightImageUrls : sprintLeftImageUrls;
         jaguar.src = imageUrls[sprintFrameIndex - 2];
