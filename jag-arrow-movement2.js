@@ -17,12 +17,23 @@ document.addEventListener('DOMContentLoaded', () => {
         rightImageUrls.push(`resources/jag-walk-cycle/right/jagwalk${i}.webp`);
         leftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
     }
+    
+    // Standby images for each direction
+    const standbyImages = ['resources/jagwalk1.webp', 'resources/jagwalk1L.webp'];
+    
+    // Combine all images for preloading
+    const allImagesToPreload = [...rightImageUrls, ...leftImageUrls, ...standbyImages];
 
-    // Preloading not shown for brevity, apply similar logic as before if needed
+    // Preload all images
+    allImagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
 
     function moveJaguar() {
         if (animating) {
-            frameIndex = frameIndex > 18 ? 2 : frameIndex + 1;
+            frameIndex = frameIndex > 19 ? 2 : frameIndex + 1;
             const imageUrl = direction === 'right' ? rightImageUrls[frameIndex - 2] : leftImageUrls[frameIndex - 2];
             jaguar.src = imageUrl;
         } else {
