@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Separate image URL lists for right and left movements
     const rightImageUrls = [];
     const leftImageUrls = [];
-    for (let i = 2; i <= 19; i++) {
+    for (let i = 1; i <= 19; i++) {
         rightImageUrls.push(`resources/jag-walk-cycle/right/jagwalk${i}.webp`);
         leftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
     }
