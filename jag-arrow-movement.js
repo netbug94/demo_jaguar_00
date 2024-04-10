@@ -13,16 +13,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Separate image URL lists for right and left movements
     const rightImageUrls = [];
     const leftImageUrls = [];
-    for (let i = 2; i <= 19; i++) {
+    for (let i = 1; i <= 19; i++) {
         rightImageUrls.push(`resources/jag-walk-cycle/right/jagwalk${i}.webp`);
         leftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
     }
+    
+    // Standby images for each direction
+    const standbyImages = ['resources/jagwalk1.webp', 'resources/jagwalk1L.webp'];
+    
+    // Combine all images for preloading
+    const allImagesToPreload = [...rightImageUrls, ...leftImageUrls, ...standbyImages];
 
-    // Preloading not shown for brevity, apply similar logic as before if needed
+    // Preload all images
+    allImagesToPreload.forEach(src => {
+        const img = new Image();
+        img.src = src;
+    });
+
 
     function moveJaguar() {
         if (animating) {
-            frameIndex = frameIndex > 18 ? 2 : frameIndex + 1;
+            frameIndex = frameIndex > 19 ? 2 : frameIndex + 1;
             const imageUrl = direction === 'right' ? rightImageUrls[frameIndex - 2] : leftImageUrls[frameIndex - 2];
             jaguar.src = imageUrl;
         } else {
@@ -39,6 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
         moveJaguar();
     }
+
+    // Sprint handler
+    function manageInterval(newID) {
+        if (newID === undefined) {
+            return intervalID;
+        }
+        clearInterval(intervalID);
+        intervalID = newID;
+    }
+
+    // Import the sprint handling logic and attach it
+    import('./jag-sprint-logic.js').then(sprintModule => {
+        sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
+    });
 
     document.addEventListener('keydown', (e) => {
         if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !isKeyDown) {
