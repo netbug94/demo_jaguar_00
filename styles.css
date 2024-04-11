@@ -29,13 +29,15 @@ body {
 .jaguar-wrap-container {
     position: absolute;
     bottom: 7%;
+    width: 100%; /* Use full width of the viewport */
+    height: 20vh; /* Adjust this value to control the visible height of the jaguar */
     z-index: 2;
 }
 
 .jaguar-in-container {
     transition: transform 0.5s ease-in-out;
-    max-width: 100%;
-    height: auto;
+    max-width: 100%; /* Max width set to 100% of the parent container */
+    height: auto; /* Height automatically adjusted to maintain aspect ratio */
     display: block;
     position: relative;
 }
