@@ -10,6 +10,15 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Failed to load the adjustJaguarSize module', error);
     });
 
+    // Import sprint logic dynamically
+    import('./jag-sprint-logic.js').then(sprintModule => {
+        sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
+    });
+    // Import sprint logic dynamically
+    import('./jag-sprint-touchscreen-logic.js').then(sprintModule => {
+        sprintModule.attachSprintHandler2(jaguar, updatePosition, manageInterval);
+    });
+
     let posX = 0;
     let isKeyDown = false;
     const stepSize = 12;
@@ -22,30 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const screens = document.querySelectorAll('.screen');
     let currentScreenIndex = 0; // Index of the current screen
     let screenWidth = window.innerWidth; // Width of the screen
-
     // Detect touch screen device
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
-
-    // Function to handle touch start
-    function handleTouchStart(e) {
-        // Determine the direction based on the touch position
-        const touchX = e.touches[0].clientX;
-        const screenWidth = window.innerWidth;
-        direction = touchX < screenWidth / 2 ? 'left' : 'right';
-
-        isKeyDown = true;
-        animating = true;
-        clearInterval(intervalID);
-        intervalID = setInterval(updatePosition, 60);
-    }
-
-    // Function to handle touch end
-    function handleTouchEnd(e) {
-        isKeyDown = false;
-        animating = false;
-        clearInterval(intervalID);
-        moveJaguar(); // Move the character to its final position
-    }
     
     jaguar.style.left = '0px';
 
@@ -73,6 +60,27 @@ document.addEventListener('DOMContentLoaded', () => {
             frameIndex = 2;
         }
         jaguar.style.left = `${posX}px`;
+    }
+
+    // Function to handle touch start
+    function handleTouchStart(e) {
+        // Determine the direction based on the touch position
+        const touchX = e.touches[0].clientX;
+        const screenWidth = window.innerWidth;
+        direction = touchX < screenWidth / 2 ? 'left' : 'right';
+
+        isKeyDown = true;
+        animating = true;
+        clearInterval(intervalID);
+        intervalID = setInterval(updatePosition, 60);
+    }
+
+    // Function to handle touch end
+    function handleTouchEnd(e) {
+        isKeyDown = false;
+        animating = false;
+        clearInterval(intervalID);
+        moveJaguar(); // Move the character to its final position
     }
 
     function updatePosition() {
@@ -109,11 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
             intervalID = newID;
         }
     }
-
-    // Import sprint logic dynamically
-    import('./jag-sprint-logic.js').then(sprintModule => {
-        sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
-    });
 
     // Touch event listeners if it's a touch device
     if (isTouchDevice) {
