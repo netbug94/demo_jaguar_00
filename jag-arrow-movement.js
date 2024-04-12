@@ -26,17 +26,27 @@ document.addEventListener('DOMContentLoaded', () => {
     // Detect touch screen device
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
 
-    // Touch event handlers
+    // Function to handle touch start
     function handleTouchStart(e) {
-        // Example: Detect swipe direction and set direction
-        // This is a simplified example, you might need to implement more complex logic to detect swipe direction
-        direction = 'right'; // Assuming right swipe for simplicity
+        // Determine the direction based on the touch position
+        const touchX = e.touches[0].clientX;
+        const screenWidth = window.innerWidth;
+        direction = touchX < screenWidth / 2 ? 'left' : 'right';
+
         isKeyDown = true;
         animating = true;
         clearInterval(intervalID);
         intervalID = setInterval(updatePosition, 60);
     }
 
+    // Function to handle touch end
+    function handleTouchEnd(e) {
+        isKeyDown = false;
+        animating = false;
+        clearInterval(intervalID);
+        moveJaguar(); // Move the character to its final position
+    }
+    
     jaguar.style.left = '0px';
 
     const rightImageUrls = [];
@@ -86,13 +96,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Calculate stepSize based on window width
         const baseStepSize = 12; // Base step size for larger screens
         const windowWidth = window.innerWidth;
-        const stepSize = windowWidth < 600 ? baseStepSize / 2 : baseStepSize; // Adjust step size for smaller screens
+        const stepSize = windowWidth < 600 ? baseStepSize : baseStepSize / 2 ; // Adjust step size for smaller screens
 
         posX += direction === 'right' ? stepSize : -stepSize;
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
         moveJaguar();
     }
-
 
     function manageInterval(newID) {
         if (newID !== undefined) {
@@ -106,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
     });
 
+    // Attach touch event listeners if it's a touch device
     // Attach touch event listeners if it's a touch device
     if (isTouchDevice) {
         document.addEventListener('touchstart', handleTouchStart);
