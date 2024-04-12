@@ -11,21 +11,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Import sprint logic dynamically
-    import('./jag-sprint-logic.js').then(sprintModule => {
+    import('./jag-keySprint-logic.js').then(sprintModule => {
         sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
     });
     // Import sprint logic dynamically
-    import('./jag-sprint-touchscreen-logic.js').then(sprintModule => {
+    import('./jag-touchSprint-logic.js').then(sprintModule => {
         sprintModule.attachSprintHandler2(jaguar, updatePosition, manageInterval);
     });
 
     let posX = 0;
     let isKeyDown = false;
-    const stepSize = 12;
-    let direction = 'right';
     let intervalID;
     let frameIndex = 2;
     let animating = false;
+    let direction = 'right';
+    const debounceDelay = 100; // Debounce delay in milliseconds
+    let lastKeyEventTime = 0;
 
     const screenContainer = document.querySelector('.screen-container');
     const screens = document.querySelectorAll('.screen');
@@ -42,7 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
         rightImageUrls.push(`resources/jag-walk-cycle/right/jagwalk${i}.webp`);
         leftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
     }
-
     const standbyImages = ['resources/jagwalk1.webp', 'resources/jagwalk1L.webp'];
     const allImagesToPreload = [...rightImageUrls, ...leftImageUrls, ...standbyImages];
     allImagesToPreload.forEach(src => {
@@ -101,15 +101,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePosition() {
-        // Calculate stepSize based on window width
         const baseStepSize = 12; // Base step size
         const windowWidth = window.innerWidth;
-        const stepSize = windowWidth < 600 ? baseStepSize : baseStepSize / 2 ; // Adaptive jaguar speed for all screens
-
+        let stepSize;
+    
+        // Determine step size based on window width
+        if (windowWidth < 500) {
+            stepSize = baseStepSize / 3; // Slower speed for very small screens
+        } else if (windowWidth >= 500 && windowWidth < 1000) {
+            stepSize = baseStepSize / 2; // Medium speed for small to medium screens
+        } else {
+            stepSize = baseStepSize; // Normal speed for larger screens
+        }
+    
+        // Update jaguar position based on direction
         posX += direction === 'right' ? stepSize : -stepSize;
+        // Ensure the jaguar doesn't move out of view
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
+    
+        // Move the jaguar to new position
         moveJaguar();
     }
+    
 
     function manageInterval(newID) {
         if (newID !== undefined) {
@@ -145,5 +158,5 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    });
+});
     
