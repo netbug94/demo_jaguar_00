@@ -1,9 +1,14 @@
-import { adjustJaguarSize } from './jag-resize-logic.js';  // Jaguar resize import
-
 document.addEventListener('DOMContentLoaded', () => {
     const jaguar = document.getElementById('jaguar');
-    adjustJaguarSize();  // Adjust the size on initial load
-    window.addEventListener('resize', adjustJaguarSize);  // Adjust the size on window resize
+
+    // Dynamic import for adaptive jaguar sizing
+    import('./jag-resize-logic.js').then(module => {
+        const { adjustJaguarSize } = module;
+        adjustJaguarSize();  // Adjust the size on initial load
+        window.addEventListener('resize', adjustJaguarSize);  // Adjust the size on window resize
+    }).catch(error => {
+        console.error('Failed to load the adjustJaguarSize module', error);
+    });
 
     let posX = 0;
     let isKeyDown = false;
@@ -12,6 +17,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let intervalID;
     let frameIndex = 2;
     let animating = false;
+
+    const screenContainer = document.querySelector('.screen-container');
+    const screens = document.querySelectorAll('.screen');
+    let currentScreenIndex = 0; // Index of the current screen
+    let screenWidth = window.innerWidth; // Width of the screen
+
+    // Detect touch screen device
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+
+    // Touch event handlers
+    function handleTouchStart(e) {
+        // Example: Detect swipe direction and set direction
+        // This is a simplified example, you might need to implement more complex logic to detect swipe direction
+        direction = 'right'; // Assuming right swipe for simplicity
+        isKeyDown = true;
+        animating = true;
+        clearInterval(intervalID);
+        intervalID = setInterval(updatePosition, 60);
+    }
 
     jaguar.style.left = '0px';
 
@@ -24,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const standbyImages = ['resources/jagwalk1.webp', 'resources/jagwalk1L.webp'];
     const allImagesToPreload = [...rightImageUrls, ...leftImageUrls, ...standbyImages];
-
     allImagesToPreload.forEach(src => {
         const img = new Image();
         img.src = src;
@@ -43,10 +66,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updatePosition() {
+        // Update position based on direction
+        posX += direction === 'right' ? stepSize : -stepSize;
+
+        // Check if the jaguar reaches the end of the current screen
+        if (posX >= screenWidth && direction === 'right') {
+            changeScreen(1); // Change to the next screen
+            posX = 0; // Reset position for the next screen
+        } else if (posX <= 0 && direction === 'left' && currentScreenIndex > 0) {
+            changeScreen(-1); // Change to the previous screen
+            posX = screenWidth - jaguar.offsetWidth; // Reset position for the previous screen
+        }
+
+        // Move the jaguar
+        moveJaguar();
+    }
+
+    function updatePosition() {
+        // Calculate stepSize based on window width
+        const baseStepSize = 12; // Base step size for larger screens
+        const windowWidth = window.innerWidth;
+        const stepSize = windowWidth < 600 ? baseStepSize / 2 : baseStepSize; // Adjust step size for smaller screens
+
         posX += direction === 'right' ? stepSize : -stepSize;
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
         moveJaguar();
     }
+
 
     function manageInterval(newID) {
         if (newID !== undefined) {
@@ -55,26 +101,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    import('./jag-sprint-logic.js').then(sprintModule => { // Sprint logic Import
+    // Import sprint logic dynamically
+    import('./jag-sprint-logic.js').then(sprintModule => {
         sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
     });
 
-    document.addEventListener('keydown', (e) => {
-        if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !isKeyDown) {
-            isKeyDown = true;
-            animating = true;
-            direction = e.key === 'ArrowRight' ? 'right' : 'left';
-            clearInterval(intervalID);
-            intervalID = setInterval(updatePosition, 60);
-        }
-    });
+    // Attach touch event listeners if it's a touch device
+    if (isTouchDevice) {
+        document.addEventListener('touchstart', handleTouchStart);
+        document.addEventListener('touchend', handleTouchEnd);
+    } else {
+        // Existing arrow key event listeners
+        document.addEventListener('keydown', (e) => {
+            if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !isKeyDown) {
+                isKeyDown = true;
+                animating = true;
+                direction = e.key === 'ArrowRight' ? 'right' : 'left';
+                clearInterval(intervalID);
+                intervalID = setInterval(updatePosition, 60);
+                e.preventDefault(); // Prevent the default behavior of arrow keys
+            }
+        });
 
-    document.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            isKeyDown = false;
-            animating = false;
-            clearInterval(intervalID);
-            moveJaguar();
-        }
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                isKeyDown = false;
+                animating = false;
+                clearInterval(intervalID);
+                moveJaguar();
+                e.preventDefault(); // Prevent the default behavior of arrow keys
+            }
+        });
+    }
     });
-});
+    
