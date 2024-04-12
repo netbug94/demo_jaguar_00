@@ -94,9 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePosition() {
         // Calculate stepSize based on window width
-        const baseStepSize = 12; // Base step size for larger screens
+        const baseStepSize = 12; // Base step size
         const windowWidth = window.innerWidth;
-        const stepSize = windowWidth < 600 ? baseStepSize : baseStepSize / 2 ; // Adjust step size for smaller screens
+        const stepSize = windowWidth < 600 ? baseStepSize : baseStepSize / 2 ; // Adaptive jaguar speed for all screens
 
         posX += direction === 'right' ? stepSize : -stepSize;
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
@@ -115,8 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
     });
 
-    // Attach touch event listeners if it's a touch device
-    // Attach touch event listeners if it's a touch device
+    // Touch event listeners if it's a touch device
     if (isTouchDevice) {
         document.addEventListener('touchstart', handleTouchStart);
         document.addEventListener('touchend', handleTouchEnd);
