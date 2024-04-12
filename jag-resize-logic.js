@@ -15,7 +15,7 @@ export function adjustJaguarSize() {
     console.log("Adjusting Jaguar Size");
     const jaguar = document.getElementById('jaguar');
     const screenWidth = window.innerWidth;
-    const newWidth = screenWidth * 0.20;  // Adjusted based on your requirement
+    const newWidth = screenWidth * 0.19;  // Adjusted based on your requirement
     jaguar.style.height = 'auto';
     jaguar.style.width = `${newWidth}px`;
 }
