@@ -11,7 +11,6 @@ export function adjustJaguarSize() {
 */
 
 // This will use Width
-/*
 export function adjustJaguarSize() {
     console.log("Adjusting Jaguar Size");
     const jaguar = document.getElementById('jaguar');
@@ -20,9 +19,10 @@ export function adjustJaguarSize() {
     jaguar.style.height = 'auto';
     jaguar.style.width = `${newWidth}px`;
 }
-*/
+
 
 // This will use Both
+/*
 export function adjustJaguarSize() {
     console.log("Adjusting Jaguar Size");
     const jaguar = document.getElementById('jaguar');
@@ -38,3 +38,4 @@ export function adjustJaguarSize() {
     jaguar.style.width = 'auto';
 
 }
+*/
