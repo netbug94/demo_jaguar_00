@@ -1,4 +1,4 @@
-import { adjustJaguarSize } from './jag-resize-logic.js';  // Import the function
+import { adjustJaguarSize } from './jag-resize-logic.js';  // Jaguar resize import
 
 document.addEventListener('DOMContentLoaded', () => {
     const jaguar = document.getElementById('jaguar');
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    import('./jag-sprint-logic.js').then(sprintModule => {
+    import('./jag-sprint-logic.js').then(sprintModule => { // Sprint logic Import
         sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
     });
 
