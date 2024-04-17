@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stepSize = windowWidth < 500 ? 9 : (windowWidth < 1000 ? 14 : 26);
         } else {
             // Dynamic step size for walking based on screen width
-            stepSize = windowWidth < 500 ? 4.5 : (windowWidth < 1000 ? 7 : 13);
+            stepSize = windowWidth < 500 ? 5 : (windowWidth < 800 ? 5 : 13);
         }
         posX += direction === 'right' ? stepSize : -stepSize;
         // Ensure the jaguar doesn't move out of view
