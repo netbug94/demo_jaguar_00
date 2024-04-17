@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updatePosition() {
         const windowWidth = window.innerWidth;
-
         if (isSprinting) {
             // Dynamic step size for sprinting based on screen width
             if (windowWidth < 500) {
@@ -68,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 stepSize = 13; // Normal speed for larger screens
             }
         }
-
         posX += direction === 'right' ? stepSize : -stepSize;
         // Ensure the jaguar doesn't move out of view
         posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
