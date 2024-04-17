@@ -1,80 +1,94 @@
-import { adjustJaguarSize } from './jag-resize-logic.js';  // Jaguar resize import
+// Dynamic import for adaptive jaguar sizing
+import('./jag-resize-logic.js').then(module => {
+    const { adjustJaguarSize } = module;
+    adjustJaguarSize();  // Adjust the size on initial load
+    window.addEventListener('resize', adjustJaguarSize);  // Adjust the size on window resize
+}).catch(error => {
+    console.error('Failed to load the adjustJaguarSize module', error);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const jaguar = document.getElementById('jaguar');
-    adjustJaguarSize();  // Adjust the size on initial load
-    window.addEventListener('resize', adjustJaguarSize);  // Adjust the size on window resize
-
     let posX = 0;
     let isKeyDown = false;
-    const stepSize = 12;
-    let direction = 'right';
+    let isSprinting = false; // New variable to track sprinting state
     let intervalID;
-    let frameIndex = 2;
+    let frameIndex = 0;
     let animating = false;
+    let direction = 'right';
+    let stepSize = 13; // Default step size
 
-    jaguar.style.left = '0px';
+    // Preloaded image arrays for left and right movement
+    const rightImageUrls = Array.from({ length: 19 }, (_, i) => `resources/jaguar-walking/right-side/webp/jagwalk${i + 1}.webp`);
+    const leftImageUrls = Array.from({ length: 19 }, (_, i) => `resources/jaguar-walking/left-side/webp/jagwalk${i + 1}L.webp`);
 
-    const rightImageUrls = [];
-    const leftImageUrls = [];
-    for (let i = 1; i <= 19; i++) {
-        rightImageUrls.push(`resources/jag-walk-cycle/right/jagwalk${i}.webp`);
-        leftImageUrls.push(`resources/jag-walk-cycle/left/jagwalk${i}L.webp`);
-    }
+    // Preloaded image arrays for sprinting
+    const sprintRightImageUrls = Array.from({ length: 16 }, (_, i) => `resources/jaguar-running/right-side/webp/jagrun${i + 1}.webp`);
+    const sprintLeftImageUrls = Array.from({ length: 16 }, (_, i) => `resources/jaguar-running/left-side/webp/jagrun${i + 1}L.webp`);
 
-    const standbyImages = ['resources/jagwalk1.webp', 'resources/jagwalk1L.webp'];
-    const allImagesToPreload = [...rightImageUrls, ...leftImageUrls, ...standbyImages];
+    // Standby images are the first in each sequence
+    const rightStandbyImage = rightImageUrls[0];
+    const leftStandbyImage = leftImageUrls[0];
 
-    allImagesToPreload.forEach(src => {
-        const img = new Image();
-        img.src = src;
-    });
-
-    function moveJaguar() {
+    function updateImage() {
         if (animating) {
-            frameIndex = frameIndex > 19 ? 2 : frameIndex + 1;
-            const imageUrl = direction === 'right' ? rightImageUrls[frameIndex - 2] : leftImageUrls[frameIndex - 2];
-            jaguar.src = imageUrl;
+            const currentImageUrls = isSprinting ? (direction === 'right' ? sprintRightImageUrls : sprintLeftImageUrls) : (direction === 'right' ? rightImageUrls : leftImageUrls);
+            frameIndex = (frameIndex + 1) % currentImageUrls.length; // Cycle through images
+            jaguar.src = currentImageUrls[frameIndex];
         } else {
-            jaguar.src = direction === 'right' ? 'resources/jagwalk1.webp' : 'resources/jagwalk1L.webp';
-            frameIndex = 2;
+            const standbyImage = direction === 'right' ? rightStandbyImage : leftStandbyImage;
+            jaguar.src = standbyImage;
         }
-        jaguar.style.left = `${posX}px`;
     }
 
     function updatePosition() {
         posX += direction === 'right' ? stepSize : -stepSize;
-        posX = Math.max(0, Math.min(posX, window.innerWidth - jaguar.offsetWidth));
-        moveJaguar();
+        jaguar.style.left = `${posX}px`;
+        updateImage();
     }
-
-    function manageInterval(newID) {
-        if (newID !== undefined) {
-            clearInterval(intervalID);
-            intervalID = newID;
-        }
-    }
-
-    import('./jag-sprint-logic.js').then(sprintModule => { // Sprint logic Import
-        sprintModule.attachSprintHandler(jaguar, updatePosition, manageInterval);
-    });
 
     document.addEventListener('keydown', (e) => {
-        if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !isKeyDown) {
-            isKeyDown = true;
-            animating = true;
-            direction = e.key === 'ArrowRight' ? 'right' : 'left';
-            clearInterval(intervalID);
-            intervalID = setInterval(updatePosition, 60);
+        switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowLeft':
+                if (!isKeyDown) {
+                    isKeyDown = true;
+                    animating = true;
+                    direction = e.key === 'ArrowRight' ? 'right' : 'left';
+                    clearInterval(intervalID);
+                    intervalID = setInterval(updatePosition, isSprinting ? 25 : 50); // Adjust interval for sprinting
+                }
+                break;
+            case 'Shift':
+                if (!isSprinting) {
+                    isSprinting = true;
+                    stepSize = 24; // Increase step size for sprinting
+                    clearInterval(intervalID);
+                    intervalID = setInterval(updatePosition, 25); // Faster interval for sprinting
+                }
+                break;
         }
+        e.preventDefault();
     });
 
     document.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            isKeyDown = false;
-            animating = false;
-            clearInterval(intervalID);
-            moveJaguar();
+        switch (e.key) {
+            case 'ArrowRight':
+            case 'ArrowLeft':
+                isKeyDown = false;
+                animating = false;
+                clearInterval(intervalID);
+                updateImage(); // Update to standby image immediately on key up
+                break;
+            case 'Shift':
+                isSprinting = false;
+                stepSize = 12; // Reset step size to normal
+                clearInterval(intervalID);
+                if (isKeyDown) { // If still moving, continue the normal walk
+                    intervalID = setInterval(updatePosition, 50);
+                }
+                break;
         }
+        e.preventDefault();
     });
 });
