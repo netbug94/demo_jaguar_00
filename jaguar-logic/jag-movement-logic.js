@@ -7,6 +7,18 @@ import('./jag-resize-logic.js').then(module => {
     console.error('Failed to load the adjustJaguarSize module', error);
 });
 
+if ('serviceWorker' in navigator) {
+    // Register a service worker hosted at the root of the
+    // site using the default scope.
+    navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        console.log('Service worker registration succeeded:', registration);
+    }, /*catch*/ function(error) {
+        console.log('Service worker registration failed:', error);
+    });
+} else {
+    console.log('Service workers are not supported.');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const jaguar = document.getElementById('jaguar');
     let posX = 0;
@@ -31,6 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const rightStandbyImage = rightImageUrls[0];
     const leftStandbyImage = leftImageUrls[0];
 
+    // Combine all image URLs into one array for preloading
+    const imageUrls = [...rightImageUrls, ...leftImageUrls, ...sprintRightImageUrls, ...sprintLeftImageUrls];
+
+    // Preload images
+    imageUrls.forEach(url => {
+        const img = new Image();
+        img.src = url;
+    });
+
     function updateImage() {
         let currentImageUrls;
         if (animating) {
@@ -50,22 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const windowWidth = window.innerWidth;
         if (isSprinting) {
             // Dynamic step size for sprinting based on screen width
-            if (windowWidth < 500) {
-                stepSize = 30 / 3; // Smaller sprint step for very small screens
-            } else if (windowWidth >= 500 && windowWidth < 1000) {
-                stepSize = 30 / 2; // Medium sprint step for small to medium screens
-            } else {
-                stepSize = 30; // Normal sprint step for larger screens
-            }
+            stepSize = windowWidth < 500 ? 9 : (windowWidth < 1000 ? 14 : 26);
         } else {
             // Dynamic step size for walking based on screen width
-            if (windowWidth < 500) {
-                stepSize = 13 / 3; // Slower speed for very small screens
-            } else if (windowWidth >= 500 && windowWidth < 1000) {
-                stepSize = 13 / 2; // Medium speed for small to medium screens
-            } else {
-                stepSize = 13; // Normal speed for larger screens
-            }
+            stepSize = windowWidth < 500 ? 4.5 : (windowWidth < 1000 ? 7 : 13);
         }
         posX += direction === 'right' ? stepSize : -stepSize;
         // Ensure the jaguar doesn't move out of view
@@ -87,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 break;
             case 'Shift':
-                // Check if an arrow key is down before enabling sprinting
                 if (isKeyDown && (direction === 'right' || direction === 'left')) {
                     isSprinting = true;
                     clearInterval(intervalID);
